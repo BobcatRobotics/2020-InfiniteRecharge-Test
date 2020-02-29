@@ -21,7 +21,7 @@ public class StopAtCollision extends CommandBase {
     private Drivetrain dt = new Drivetrain();
     double last_linear_accel_x = 0;
     double last_linear_accel_y = 0;
-    final static double kCollisionThreshold_DeltaG = 0.5f; // Jerk (m/s^3) threshold
+    final static double kCollisionThreshold_DeltaG = 0.5; // Jerk (m/s^3) threshold
     public static boolean collisionDetected = false;
 
     public StopAtCollision(NavxGyro gyro, Drivetrain dt) {
@@ -35,11 +35,11 @@ public class StopAtCollision extends CommandBase {
         long timeInitialX = System.nanoTime();
         last_linear_accel_x = gyro.getWorldLinearAccelX();
         double curr_linear_accel_x = gyro.getWorldLinearAccelX();
-        double currentJerkX = (curr_linear_accel_x - last_linear_accel_x) / (System.nanoTime() * 1000000000 - timeInitialX * 1000000000);
+        double currentJerkX = (curr_linear_accel_x - last_linear_accel_x) / (1000000000 * (System.nanoTime() - timeInitialX));
         long timeInitialY = System.nanoTime();
         last_linear_accel_y = gyro.getWorldLinearAccelY();
         double curr_linear_accel_y = gyro.getWorldLinearAccelY();
-        double currentJerkY = (curr_linear_accel_y - last_linear_accel_y) / (System.nanoTime() * 1000000000 - timeInitialY * 1000000000);
+        double currentJerkY = (curr_linear_accel_y - last_linear_accel_y) / (1000000000 * (System.nanoTime() - timeInitialY));
 
         // Testing the actual jerk against the threshold
         if ((Math.abs(currentJerkX) > kCollisionThreshold_DeltaG)
@@ -55,6 +55,7 @@ public class StopAtCollision extends CommandBase {
         }
     }
 
+    @Override
     public void execute() {
         DetectCollision();
         try {
