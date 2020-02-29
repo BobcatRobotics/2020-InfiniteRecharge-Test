@@ -114,9 +114,9 @@ public class RobotContainer {
 
     new JoystickButton(gamepad, Constants.Y_Button).whenPressed(new IntakeDown(intake));
     // Starts targeting when the up arrow on the D-pad is pressed
-    new POVButton(gamepad, povUp).whenPressed(new TargetEntity(limelight, turret, gamepad));
+    new POVButton(gamepad, povUp).whenPressed(new TargetEntity(limelight, turret));
     // Ends targeting when the down arrow on the D-pad is pressed
-    new POVButton(gamepad, povDown).cancelWhenPressed(new TargetEntity(limelight, turret, gamepad));
+    new POVButton(gamepad, povDown).cancelWhenPressed(new TargetEntity(limelight, turret));
     // Heads to a position when the left bumper is pressed
     // new JoystickButton(gamepad, Button.kBumperLeft.value)
     //     .whenPressed(RouteFinder.getPathCommand(RouteFinder.trajectorygen(pointx, pointy, rotation)));
