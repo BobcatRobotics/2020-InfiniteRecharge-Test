@@ -19,8 +19,8 @@ import java.lang.*;
 public class StopAtCollision extends CommandBase {
     private NavxGyro gyro = new NavxGyro(SPI.Port.kMXP);
     private Drivetrain dt = new Drivetrain();
-    double last_world_linear_accel_x = 0;
-    double last_world_linear_accel_y = 0;
+    double last_linear_accel_x = 0;
+    double last_linear_accel_y = 0;
     final static double kCollisionThreshold_DeltaG = 0.5f; // Jerk (m/s^3) threshold
     public static boolean collisionDetected = false;
 
@@ -32,12 +32,14 @@ public class StopAtCollision extends CommandBase {
 
     public void DetectCollision() {
         // Calculating jerk
-        double curr_world_linear_accel_x = gyro.getWorldLinearAccelX();
-        last_world_linear_accel_x = curr_world_linear_accel_x;
-        double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
-        double curr_world_linear_accel_y = gyro.getWorldLinearAccelY();
-        last_world_linear_accel_y = curr_world_linear_accel_y;
-        double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
+        long timeInitialX = System.nanoTime();
+        last_linear_accel_x = gyro.getWorldLinearAccelX();
+        double curr_linear_accel_x = gyro.getWorldLinearAccelX();
+        double currentJerkX = (curr_linear_accel_x - last_linear_accel_x) / (System.nanoTime() * 1000000000 - timeInitialX * 1000000000);
+        long timeInitialY = System.nanoTime();
+        last_linear_accel_y = gyro.getWorldLinearAccelY();
+        double curr_linear_accel_y = gyro.getWorldLinearAccelY();
+        double currentJerkY = (curr_linear_accel_y - last_linear_accel_y) / (System.nanoTime() * 1000000000 - timeInitialY * 1000000000);
 
         // Testing the actual jerk against the threshold
         if ((Math.abs(currentJerkX) > kCollisionThreshold_DeltaG)
